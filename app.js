@@ -9,7 +9,7 @@ const template = `<article>
   </ul>
 </article>`
 let content = ""
-for (const game of games) {
+games.forEach((game, i) => {
   const entry = template
     .replace(/POS/g, i + 1)
     .replace(/SLUG/g, game.slug)
@@ -19,18 +19,16 @@ for (const game of games) {
     .replace(/GITHUB/g, game.github)
     .replace("<a href='http:///'></a>", "-")
   content += entry
-}
+})
 document.getElementById("content").innerHTML = content
 
 // Registering Service Worker
 let swRegistration = null
 
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker
-    .register("/pwa-examples/js13kpwa/sw.js")
-    .then((reg) => {
-      swRegistration = reg
-    })
+  navigator.serviceWorker.register("sw.js").then((reg) => {
+    swRegistration = reg
+  })
 }
 
 // Requesting permission for Notifications after clicking on the button
@@ -54,6 +52,6 @@ function randomNotification() {
     body: notifBody,
     icon: notifImg,
   }
-  swRegistration.showNotification(notifTitle, options)
+  new Notification(notifTitle, options)
   setTimeout(randomNotification, 30000)
 }
